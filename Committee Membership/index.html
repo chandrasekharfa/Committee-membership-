@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pie Chart with D3.js</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .heading {
+            font-family: 'Poppins', sans-serif;
+            font-size: 30px;
+            font-weight: 600;
+            line-height: 15px;
+            color: #6876C0;
+            width: auto;
+            height: 25px;
+            top: 30%;
+            left: 5%;
+            position: absolute;
+            margin: 0;
+            white-space: nowrap;
+        }
+        .heading2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 30px;
+            font-weight: 600;
+            line-height: 15px;
+            color:#5F5C75;
+            width: auto;
+            height: 25px;
+            top: 30%;
+            position: absolute;
+            margin: 0;
+            white-space: nowrap;
+            right: 0;
+            margin-right: 5%;
+        }
+        .heading2 .style{
+            border-radius: 50px;
+            background-color:#D9DDF2;
+            color:  #5F5C75;
+            display: inline-block;
+            text-align: center;
+            width: 25%;
+            height: 40px;
+            line-height: 40px;
+            font-weight: 500;
+           
+        }
+        .heading .style{
+            border-radius: 50px;
+            background-color:#D9DDF2;
+            color:  #6876C0;
+            display: inline-block;
+            text-align: center;
+            width: 25%;
+            height: 40px;
+            line-height: 40px;
+            font-weight: 500;
+           
+        }
+        .section-details {
+            font-family: 'Poppins', sans-serif;
+            font-size: 30px;
+            font-weight: 500;
+            line-height: 19px;
+            letter-spacing: 1px;
+            text-align: left;
+            position: absolute;
+            color: #6876C0;
+            top: 36%;
+            left: 3%;
+            width: auto;
+            white-space: nowrap;
+        }
+        .section-details2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 30px;
+            font-weight: 500;
+            line-height: 19px;
+            letter-spacing: 1px;
+            text-align: left;
+            position: absolute;
+            color: #5F5C75;
+            top: 36%;
+            right: 10%;
+            width: auto;
+            white-space: nowrap;
+        }
+        .section-details2 li{
+            list-style-type: decimal;
+            margin-left: 7%;
+            margin-bottom: 20px;
+        }
+        .section-details li{
+            list-style-type: decimal;
+            margin-left: 7%;
+            margin-bottom: 20px;
+        }
+        .section-details .duration {
+            font-size: 30px;
+            font-weight: 500;
+            width: 30%;
+            height: 39px;
+            border-radius: 50px;
+            background-color:#D9DDF2;
+            color:  #6876C0;
+            display: inline-block;
+            text-align: center;
+            line-height: 39px;
+        }
+        .section-details2 .duration {
+            font-size: 30px;
+            font-weight: 500;
+            width: 44%;
+            height: 39px;
+            border-radius: 50px;
+            background-color:#D9DDF2;
+            color:  #5F5C75;
+            display: inline-block;
+            text-align: center;
+            line-height: 39px;
+            margin-left: 15px;
+        }
+        .horizontal-line {
+            width: 25%;
+            height: 2px;
+            background-color: #D9DDF2;
+            position: absolute;
+            top: 36%;
+            left: 5%;
+        }
+        .horizontal-line2{
+            width: 31%;
+            height: 2px;
+            background-color: #D9DDF2;
+            position: absolute;
+            top: 36%;
+            right: 2%;
+        }
+    </style>
+</head>
+<body style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+    <div id="pie-chart-container"></div>
+
+    <script>
+        // Sample data for the pie chart
+        const data = [
+            { label: 'A', value: 30 },
+            { label: 'B', value: 70 },
+        ];
+    
+        // Set up the dimensions for the pie chart
+        const width = 500;
+        const height = 500;
+        const radius = Math.min(width, height) / 3;
+    
+        // Set up the color scale
+        const color = d3.scaleOrdinal()
+            .domain(data.map(d => d.label))
+            .range(['#B9BCCE', '#6876C0']);
+    
+        // Create the pie chart layout
+        const pie = d3.pie()
+            .value(d => d.value)
+            .sort(null);
+    
+        // Create the arc generator
+        const arc = d3.arc()
+            .innerRadius(radius * 0.7)
+            .outerRadius(radius);
+    
+        // Create the SVG element
+        const svg = d3.select('#pie-chart-container')
+            .append('svg')
+            .attr('width', width)
+            .attr('height', height)
+            .append('g')
+            .attr('transform', `translate(${width / 2}, ${height / 2})`);
+    
+        // Generate the pie chart
+        const arcs = svg.selectAll('arc')
+            .data(pie(data))
+            .enter()
+            .append('g')
+            .attr('class', 'arc');
+    
+        arcs.append('path')
+            .attr('d', arc)
+            .attr('fill', d => color(d.data.label));
+        svg.append('image')
+            .attr('xlink:href', 'fi_3050284.svg') // Provide the path to your image file
+            .attr('x', -50) // Adjust the position of the image as needed
+            .attr('y', -50) // Adjust the position of the image as needed
+            .attr('width', 100) // Adjust the size of the image as needed
+            .attr('height', 100); 
+        
+        // Add circles outside of the pie chart with percentages
+        arcs.append('circle')
+            .attr('cx', d => arc.centroid(d)[0] * 1.5)
+            .attr('cy', d => arc.centroid(d)[1] * 1.5)
+            .attr('r', 25) // Increase the circle diameter size here
+            .style('fill', '#5C5B681A')
+            .style('stroke', d=> d.data.label == 'B'? '#6876C0' : '#5C5B68')
+            .style('stroke-width',2);
+        
+        arcs.append('text')
+            .attr('x', d => arc.centroid(d)[0] * 1.5)
+            .attr('y', d => arc.centroid(d)[1] * 1.5)
+            .attr('dy', '0.35em')
+            .attr('text-anchor', 'middle')
+            .text(d => Math.round(d.data.value) + '%')
+            .style('fill',d=> d.data.label == 'B'? '#6876C0' : '#5C5B68');
+        
+        // Draw lines from each section of the pie to the outer circle
+        arcs.append('line')
+            .attr('x1', d => arc.centroid(d)[0])
+            .attr('y1', d => arc.centroid(d)[1])
+            .attr('x2', d => arc.centroid(d)[0] * 1.33)
+            .attr('y2', d => arc.centroid(d)[1] * 1.332)
+            .style('stroke', d => d.data.label == 'B'? '#6876C0' : '#5C5B68')
+            .style('stroke-width', 2); // Increase the line size here
+        
+        // Adding heading and rectangle layout for section B
+        const heading = d3.select('#pie-chart-container')
+            .append('h1')
+            .attr('class', 'heading')
+            .html('Independent Directors <span class="style">70%</span>');
+
+        // Addig section details below the pie chart
+        const sectionDetails = d3.select('#pie-chart-container')
+            .append('div')
+            .attr('class', 'section-details')
+            .html('<ul><li>Sarah Ince <span class="duration">2Y</span></li><li>Jason McGrath <span class="duration">3Y</span></li></ul>');
+
+        // Adding horizontal line below section details
+        const horizontalLine = d3.select('#pie-chart-container')
+            .append('div')
+            .attr('class', 'horizontal-line');
+
+        const heading2 = d3.select('#pie-chart-container')
+            .append('h1')
+            .attr('class','heading2')
+            .html('Non-Independent Directors <span class="style">30%</span>')
+        const horizontalLine2 = d3.select('#pie-chart-container')
+            .append('div')
+            .attr('class', 'horizontal-line2');
+        const sectionDetails2 = d3.select('#pie-chart-container')
+            .append('div')
+            .attr('class', 'section-details2')
+            .html('<ul><li>Gabrielle Walsh <span class="duration">CE0-2Y</span></li><li>Sean Glover<span class="duration">Chair-3Y</span></li><li>Alexandra Buckland<span class="duration">2Y</span></li><li>Brian Murrray</li><li>Keith Simpson</li></ul>');
+
+        
+    </script>
+</body>
+</html>
